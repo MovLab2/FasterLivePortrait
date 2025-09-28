@@ -38,4 +38,5 @@ python webui.py --mode trt --host 0.0.0.0
 -  Working requirement files
 -  Kokoro error patches
 
-**Complete working setup tested on RTX 5060 Ti - September 2024**
+**Complete working setup tested on RTX 5060 Ti - September 2025**
+
