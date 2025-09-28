@@ -15,7 +15,7 @@
 - \scripts/onnx2trt.py\ - Updated TensorRT API compatibility
 - \src/models/motion_extractor_model.py\ - Fixed output order
 - \webui.py\ - Kokoro error patches
-- \equirements.txt\ - Working dependency versions
+- \requirements.txt\ - Working dependency versions
 
 ### 3. TensorRT Conversion
 - All ONNX models successfully converted to TensorRT
@@ -96,3 +96,4 @@ python webui.py --mode trt --host 0.0.0.0
 - Mixed CUDA versions demonstrate excellent backward compatibility
 
 **This configuration represents a cutting-edge, real-world setup that pushes compatibility boundaries!**
+
