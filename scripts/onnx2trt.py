@@ -58,7 +58,8 @@ class EngineBuilder:
 
         self.builder = trt.Builder(self.trt_logger)
         self.config = self.builder.create_builder_config()
-        self.config.max_workspace_size = 12 * (2 ** 30)  # 12 GB
+        # DEPRECATION: Replaced config.max_workspace_size with set_memory_pool_limit
+        self.config.set_memory_pool_limit(trt.MemoryPoolType.WORKSPACE, 12 * (2 ** 30))
 
         profile = self.builder.create_optimization_profile()
 
@@ -69,7 +70,7 @@ class EngineBuilder:
 
         self.config.add_optimization_profile(profile)
         # 严格类型约束
-        self.config.set_flag(trt.BuilderFlag.STRICT_TYPES)
+        # self.config.set_flag(trt.BuilderFlag.STRICT_TYPES)
 
         self.batch_size = None
         self.network = None
@@ -101,12 +102,13 @@ class EngineBuilder:
 
         log.info("Network Description")
         for input in inputs:
-            self.batch_size = input.shape[0]
+            self.batch_size = input.shape
             log.info("Input '{}' with shape {} and dtype {}".format(input.name, input.shape, input.dtype))
         for output in outputs:
             log.info("Output '{}' with shape {} and dtype {}".format(output.name, output.shape, output.dtype))
         # assert self.batch_size > 0
-        self.builder.max_batch_size = 1
+        # self.builder.max_batch_size is deprecated and will not be used in explicit batch mode
+        # self.builder.max_batch_size = 1
 
     def create_engine(
             self,
@@ -128,10 +130,15 @@ class EngineBuilder:
                 log.warning("FP16 is not supported natively on this platform/device")
             else:
                 self.config.set_flag(trt.BuilderFlag.FP16)
-
-        with self.builder.build_engine(self.network, self.config) as engine, open(engine_path, "wb") as f:
+        
+        # Use the modern TensorRT API method to build the serialized network
+        serialized_engine = self.builder.build_serialized_network(self.network, self.config)
+        if serialized_engine:
             log.info("Serializing engine to file: {:}".format(engine_path))
-            f.write(engine.serialize())
+            with open(engine_path, "wb") as f:
+                f.write(serialized_engine)
+        else:
+            log.error("Failed to build engine.")
 
 
 def main(args):

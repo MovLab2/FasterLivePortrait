@@ -194,7 +194,7 @@ with gr.Blocks(theme=gr.themes.Soft(font=[gr.themes.GoogleFont("Plus Jakarta San
                         driving_text_input = gr.Textbox(value="Hi, I am created by Faster LivePortrait!",
                                                         label="Driving Text")
                         voice_dir = "checkpoints/Kokoro-82M/voices/"
-                        voice_names = [os.path.splitext(vname)[0] for vname in os.listdir(voice_dir) if vname.endswith(".pt")]
+                        voice_names = ['af_heart', 'af_bella', 'af_jessica', 'af_grace', 'af_riley']  # Kokoro voices for vname in os.listdir(voice_dir) if vname.endswith(".pt")]
                         voice_name = gr.Dropdown(
                             choices=voice_names, value='af_heart', label="Voice Name")
 
